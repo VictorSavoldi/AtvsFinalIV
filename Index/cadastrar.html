@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cadastrar</title>
+
+    <link rel="stylesheet" href="estilo.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="container-fluid px-1 py-5 mx-auto">
+            <div class="row d-flex justify-content-center">
+                <div class="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
+                    <p id="title-page">Cadastro de Novos Veículos</p>
+                    <p class="blue-text">Cadastre novos modelos em sua lista.<br>
+                        Lembre sempre de preencher todos os campos corretamente</p>
+                    <div class="card">
+                        <p class="text-center mb-4" id="title-form">Dados necessários para cadastro:</p>
+
+                        <form class="form-card formularioCarro" id="formulario-principal" novalidate>
+
+                            <div class="row justify-content-between text-left">
+
+                                <div class="form-group col-sm-12 flex-column d-flex">
+                                    <label class="form-control-label px-3 title-input">Nome do Veículo
+                                        <span class="text-danger"> *</span>
+                                    </label>
+                                    <input type="text" id="nomeVeiculo" placeholder="Modelo" maxlength="50" required>
+
+                                    <div class="valid-feedback">Conferido</div>
+                                    <div class="invalid-feedback">Por favor, insira o nome do veículo.</div>
+                                </div>
+
+                                <div class="form-group col-sm-12 flex-column d-flex">
+                                    <label class="form-control-label px-3 title-input">Tipo
+                                        <span class="text-danger"> *</span>
+                                    </label>
+                                    <input type="text" id="tipoVeiculo" placeholder="Ex: Sedan" maxlength="50" required>
+
+                                    <div class="valid-feedback">Conferido</div>
+                                    <div class="invalid-feedback">Por favor, insira o tipo do veículo.</div>
+                                </div>
+
+                                <div class="form-group col-sm-12 flex-column d-flex">
+                                    <label class="form-control-label px-3 title-input">Ano do Veículo
+                                        <span class="text-danger"> *</span>
+                                    </label>
+                                    <input type="number" id="anoVeiculo" placeholder="Ano de fabricação" maxlength="4"
+                                        required>
+
+                                    <div class="valid-feedback">Conferido</div>
+                                    <div class="invalid-feedback">Por favor, insira o ano do veículo.</div>
+                                </div>
+
+                                <div class="form-group col-sm-12 flex-column d-flex">
+                                    <label class="form-control-label px-3 title-input">Valor
+                                        <span class="text-danger"> *</span>
+                                    </label>
+                                    <input type="text" id="valorVeiculo" placeholder="Valor estimado" maxlength="15"
+                                        required>
+
+                                    <div class="valid-feedback">Conferido</div>
+                                    <div class="invalid-feedback">Por favor, insira o valor do veículo.</div>
+                                </div>
+
+                                <div class="form-group col-sm-12 flex-column d-flex">
+                                    <label class="form-control-label px-3 title-input">Cor
+                                        <span class="text-danger"> *</span>
+                                    </label>
+                                    <input type="text" id="corVeiculo" placeholder="Cor da pintura" maxlength="20"
+                                        required>
+
+                                    <div class="valid-feedback">Conferido</div>
+                                    <div class="invalid-feedback">Por favor, insira a cor do veículo.</div>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-end">
+                                <div class="form-group col-sm-4">
+                                    <button id="btnCadastrar" type="submit"
+                                        class="btn-block btn-primary">Cadastrar</button>
+                                </div>
+                            </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <script src="jquery-3.5.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+
+    <script>
+        (function () {
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('formularioCarro');
+
+                var validacao = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+
+                    }, false);
+                });
+            }, false);
+        })();
+
+
+        var endpoint = 'https://localhost:5001';
+
+        var fApi = {
+            requisicaoAdicionar: function (endpoint, valor) {
+
+                try {
+                    event.preventDefault();
+                    $.ajax({
+
+                        url: endpoint + "/v1/carros",
+                        data: valor,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        success: function (result) {
+
+                            let mensagem = `Registro efetuado: ${result.nome}`;
+                            console.log(mensagem);
+
+                            $('#formulario-principal').trigger('reset');
+                        }
+                    });
+
+                } catch (e) {
+                    console.log('Erro ao enviar requisição ajax. Detalhes: ' + e.message)
+                }
+            }
+        };
+
+        $('#btnCadastrar').click(function () {
+            if (document.getElementById('formulario-principal')[0].checkValidity()) {
+                fApi.requisicaoAdicionar(endpoint, JSON.stringify(
+                    {
+                        Nome: $('#nomeVeiculo').val(),
+                        Tipo: $('#tipoVeiculo').val(),
+                        Ano: $('#anoVeiculo').val(),
+                        Valor: $('#valorVeiculo').val(),
+                        Cor: $('#corVeiculo').val()
+                    }
+                ));
+            }
+        });
+    </script>
+
+</body>
+
+</html>
